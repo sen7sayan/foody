@@ -57,6 +57,8 @@
           if(password_verify($password, $row['password'])){
             if(session_id() == '') {
               session_start();
+              $_SESSION['cart'] = 0;
+              $_SESSION['myfood'] = array();
             }
             $_SESSION['login'] = true;
             $_SESSION['username'] = $row['name'];
@@ -94,12 +96,28 @@
       <?php
         if(isset($_SESSION['login']) && $_SESSION['login'] == true){
           echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i>'.$_SESSION['username'].'</a>
+
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Cart</a></li>
+            <li><a class="dropdown-item" href="#">Orders</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Change My Address</a></li>
+          </ul>
+        </li>
+
+          <li class="nav-item dropstart ">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-user text-danger"></i> '.$_SESSION['username'].'</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="action/logout.php">Log Out</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Delete my account</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
-          </li>
+
+          
+          
          
           
           
@@ -121,6 +139,9 @@
       
     </div>
   </div>
+  <?php 
+  if(!isset($_SESSION['login'])){
+    echo '
     <!-- login modal start -->
     <div class="modal fade" id="login-page" tabindex="-1" aria-labelledby="login-page" aria-hidden="true">
       <div class="modal-dialog">
@@ -155,6 +176,8 @@
       </div>
     </div>
     <!-- login modal end  -->
+  ';}
+    ?>
 </nav>
 
     <!-- navbar end  -->
