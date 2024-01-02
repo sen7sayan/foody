@@ -1,9 +1,42 @@
 <?php
   if(session_id() == '') {
     session_start();
-    $_SESSION['cart'] = 0;
-    $_SESSION['myfood'] = array();
+
+    if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
+      echo "here_food1";
+      $_SESSION['cart'] = 0;
+      $_SESSION['totalValue'] = 0;
+      $_SESSION['myfood'] = array();
+    }
     
+  }
+
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
+    if(isset($_POST['foodName']) && isset($_POST['price']) && isset($_POST['quantity'])){
+      
+        $foodName = $_POST['foodName'];
+        $price = $_POST['price'];
+        $quantity = $_POST['quantity'];
+
+
+
+        // update quantity
+        $_SESSION['cart'] +=  $_POST['quantity'];
+        
+
+        // update food order
+        
+        array_push($_SESSION['myfood'],array($foodName,$price,$quantity ,$price*$quantity));
+
+        
+
+        // update total value
+        $totalValue = $_SESSION['totalValue'];
+        $totalValue += $price * $quantity;
+        $_SESSION['totalValue'] = $totalValue;
+
+
+    }
   }
 ?>
 
@@ -60,12 +93,12 @@
                 <div class="mb-3 mx-auto">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body row">
-                          <h5 class="card-title col-12">Veg Briyani</h5>
+                          <h5 class="card-title col-12">Veg Briyani @70</h5>
                           <form action="food1.php" method="post">
-                            <input value="" type="number" name="price" style="display: none;">
-                            <input value="" type="text" name="foodName" style="display: none;">
+                            <input value="70" type="number" name="price" style="display: none;">
+                            <input value="Veg Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
-                                    <option value="0">0</option>
+                                    
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -82,12 +115,12 @@
                 <div class="mb-3 mx-auto">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body row">
-                          <h5 class="card-title col-12">Panner Briyani</h5>
+                          <h5 class="card-title col-12">Panner Briyani @120</h5>
                           <form action="food1.php" method="post">
-                            <input value="" type="number" name="price" style="display: none;">
-                            <input value="" type="text" name="foodName" style="display: none;">
+                            <input value="120" type="number" name="price" style="display: none;">
+                            <input value="Panner Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
-                                    <option value="0">0</option>
+                                    
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -105,10 +138,10 @@
                         <div class="card-body row">
                           <h5 class="card-title col-12">Chicken Briyani</h5>
                             <form action="food1.php" method="post">
-                              <input value="" type="number" name="price" style="display: none;">
-                              <input value="" type="text" name="foodName" style="display: none;">
+                              <input value="170" type="number" name="price" style="display: none;">
+                              <input value="Chicken Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
-                                    <option value="0">0</option>
+                                    
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -126,10 +159,10 @@
                         <div class="card-body row">
                           <h5 class="card-title col-12">Mutton Briyani</h5>
                           <form action="food1.php" method="post">
-                            <input value="" type="number" name="price" style="display: none;">
-                            <input value="" type="text" name="foodName" style="display: none;">
+                            <input value="220" type="number" name="price" style="display: none;">
+                            <input value="Mutton Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
-                                    <option value="0">0</option>
+                                    
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>

@@ -1,9 +1,15 @@
 <?php
-  if(session_id() == '') {
+   if(session_id() == '') {
+    
     session_start();
-    $_SESSION['cart'] = 0;
-    $_SESSION['myfood'] = array();
-   
+
+    if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
+      $_SESSION['cart'] = 0;
+      $_SESSION['totalValue'] = 0;
+      $_SESSION['myfood'] = array();
+    }
+    
+    
   }
 ?>
 

@@ -57,8 +57,13 @@
           if(password_verify($password, $row['password'])){
             if(session_id() == '') {
               session_start();
-              $_SESSION['cart'] = 0;
-              $_SESSION['myfood'] = array();
+          
+              if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
+                $_SESSION['cart'] = 0;
+                $_SESSION['totalValue'] = 0;
+                $_SESSION['myfood'] = array();
+              }
+              
             }
             $_SESSION['login'] = true;
             $_SESSION['username'] = $row['name'];
@@ -98,7 +103,7 @@
           echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
 
           <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
+          <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-bowl-food text-danger"></i> mytable ('.$_SESSION['cart'].')</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">Cart</a></li>
             <li><a class="dropdown-item" href="#">Orders</a></li>
@@ -127,7 +132,7 @@
         if(!isset($_SESSION['login'])){
           echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
+            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable ('.$_SESSION['cart'].')</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-page"><i class="fa-solid fa-right-to-bracket text-danger"></i> Login/SignUp</a>
