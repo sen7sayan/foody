@@ -11,26 +11,65 @@
       $email = $_POST["email"];
       $name = $_POST["cname"];
       $password = $_POST["password"];
+      $cpassword = $_POST["cpassword"];
 
-      $existSql = "SELECT * FROM `users` WHERE `email` = '$email'";
+      
 
-      $result = mysqli_query($conn,$existSql);
+      if($password == $cpassword){
 
-      $rows = mysqli_num_rows($result);
+        $existSql = "SELECT * FROM `users` WHERE `email` = '$email'";
+        $result = mysqli_query($conn,$existSql);
+        $rows = mysqli_num_rows($result);
 
-      if($rows == 0){
+        if($rows == 0){
 
-        $createUserSql = "INSERT INTO `users` ( `name`, `email`, `password`, `dt`) VALUES ('$name', '$email', '$password', current_timestamp())";
-        $result = mysqli_query($conn,$createUserSql);
-        // header("location: ../index.php");
-        $showAlert = "Account Your Created Successfully !!";
-
+          $hash = password_hash($password,PASSWORD_DEFAULT);
+  
+          $createUserSql = "INSERT INTO `users` ( `name`, `email`, `password`, `dt`) VALUES ('$name', '$email', '$hash', current_timestamp())";
+          
+          $result = mysqli_query($conn,$createUserSql);
+          // header("location: ../index.php");
+          $showAlert = "Account Your Created Successfully !!";
+  
+        }else{
+          $showError = "User exist, Please Log in !!";
+        }
       }else{
-        $showError = "User exist, Please Log in !!";
+        $showError = "Password, does not match !!";
       }
+
+      
       
     }else if(isset($_POST["cname"]) == false && isset($_POST["email"]) == true && isset($_POST["password"])== true && isset($_POST["cpassword"]) == false){
       
+      $email = $_POST["email"];
+      $password = $_POST["password"];
+
+      $existSql = "SELECT * FROM `users` WHERE `email` = '$email'";
+      $result = mysqli_query($conn, $existSql);
+
+      if(mysqli_num_rows($result) == 0){
+        $showError = "User, does not exist !!";
+      }else if (mysqli_num_rows($result) == 1){
+        
+        while($row = mysqli_fetch_assoc($result)){
+          // echo $row['password'];
+          if(password_verify($password, $row['password'])){
+            if(session_id() == '') {
+              session_start();
+            }
+            $_SESSION['login'] = true;
+            $_SESSION['username'] = $row['name'];
+          }else{
+            $showError = "Enter, correct password !!";
+          }
+        }
+        
+      }else{
+        $showError = "Something, went wrong !!";
+      }
+
+
     }
   }
 
@@ -52,17 +91,33 @@
             <input class="search-box form-control me-2 rounded-5" name="foodsearch" type="text" placeholder="lets eat something" aria-label="Search">
             <button class="btn btn-danger rounded" type="submit" >Search</button>
         </form>
+      <?php
+        if(isset($_SESSION['login']) && $_SESSION['login'] == true){
+          echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i>'.$_SESSION['username'].'</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
+          </li>
+         
+          
+          
+        </ul>';
+        }
 
-      <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-page"><i class="fa-solid fa-right-to-bracket text-danger"></i> Login/SignUp</a>
-        </li>
-        
-        
-      </ul>
+        if(!isset($_SESSION['login'])){
+          echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-page"><i class="fa-solid fa-right-to-bracket text-danger"></i> Login/SignUp</a>
+          </li>          
+        </ul>';
+        }
+      ?>
+      
       
     </div>
   </div>
