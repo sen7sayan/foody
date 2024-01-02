@@ -1,4 +1,40 @@
 <!-- navbar start  -->
+<?php
+  $showError = false;
+  $showAlert = false;
+
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+    include '../lovely/connection/_dbconnection.php';
+    if(isset($_POST["cname"]) == true && isset($_POST["email"]) == true && isset($_POST["password"])== true && isset($_POST["cpassword"]) == true){
+      
+      $email = $_POST["email"];
+      $name = $_POST["cname"];
+      $password = $_POST["password"];
+
+      $existSql = "SELECT * FROM `users` WHERE `email` = '$email'";
+
+      $result = mysqli_query($conn,$existSql);
+
+      $rows = mysqli_num_rows($result);
+
+      if($rows == 0){
+
+        $createUserSql = "INSERT INTO `users` ( `name`, `email`, `password`, `dt`) VALUES ('$name', '$email', '$password', current_timestamp())";
+        $result = mysqli_query($conn,$createUserSql);
+        // header("location: ../index.php");
+        $showAlert = "Account Your Created Successfully !!";
+
+      }else{
+        $showError = "User exist, Please Log in !!";
+      }
+      
+    }else if(isset($_POST["cname"]) == false && isset($_POST["email"]) == true && isset($_POST["password"])== true && isset($_POST["cpassword"]) == false){
+      
+    }
+  }
+
+?>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
@@ -22,7 +58,7 @@
           <a class="nav-link active" aria-current="page" href="checkout.php"><i class="fa-solid fa-bowl-food text-danger"></i> mytable</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-page"><i class="fa-solid fa-right-to-bracket text-danger"></i> login</a>
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#login-page"><i class="fa-solid fa-right-to-bracket text-danger"></i> Login/SignUp</a>
         </li>
         
         
@@ -39,11 +75,21 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form class="row" action="">
+            <form class="row" action="index.php" id="signIn-form"  method="post">
               <input class="col-12 form-control mb-3" type="email" name="email" id="" placeholder="Enter email">
               <input class="col-12 form-control mb-3" type="password" name="password" placeholder="Enter password">
-              <input type="submit" value="Log In" class="btn btn-danger col-2 mb-3 me-3">
-              <input type="submit" value="Sign Up" class="btn btn-danger col-2 mb-3 ">
+              <input type="submit" value="Log In" class="btn btn-danger col-4 mb-3 me-3">
+              <input type="button" value="Go to Sign Up" class="btn btn-danger col-6 mb-3 " id="signUp-btn">
+            </form>
+
+            <form class="row d-none" action="index.php" id="signUp-form" method="post">
+              <input class="col-12 form-control mb-3" type="text" name="cname" id="" placeholder="Enter your name">
+              <input class="col-12 form-control mb-3" type="email" name="email" id="" placeholder="Enter email">
+              <input class="col-12 form-control mb-3" type="password" name="password" placeholder="Enter password">
+              <input class="col-12 form-control mb-3" type="password" name="cpassword" placeholder="Enter confirm password">
+              
+              <input type="button" value="Go to Log In" class="btn btn-danger col-6 mb-3 me-3" id="signIn-btn">
+              <input type="submit" value="Sign Up" class="btn btn-danger col-4 mb-3 " >
             </form>
             
           </div>
