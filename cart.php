@@ -11,6 +11,8 @@
     
     
   }
+
+  
 ?>
 
 <!doctype html>
@@ -32,6 +34,9 @@
     
   <?php include 'components/_navbar.php' ?>
 
+  <?php 
+    // print_r($_SESSION['myfood']);
+  ?>
 
 
     <section>
@@ -40,52 +45,79 @@
             <h1>Your Cart </h1>
             <hr>
             <div class="d-flex " >
-                
-                
                 <?php
+                
+                    // print_r($_SESSION['myfood']);
                     if(isset($_SESSION['myfood']) && $_SESSION['cart'] >0){
-                        $items =  $_SESSION['myfood'];
-                        echo '
-                        <div class="d-flex ">
-                            <ul class="nav d-flex flex-column ">
-                                <li class="nav-link text-black">My food </li> ';
-                                
-                                foreach($items as $item){
-                                    echo'<li class="nav-link text-black">'.$item[0].' <strong> X '.$item[1] .'</strong> </li>';
-                                }
-                            echo '</ul> </div>';
+                        $items = $_SESSION['myfood'];
 
                         echo '
-                        <div class="d-flex justify-content-between">
-                            <ul class="nav d-flex flex-column">
-                                <li class="nav-link text-black">Rate </li>';
-                                foreach($items as $item){
-                                    echo'<li class="nav-link text-black">'.$item[2].' </li>';
-                                }
-                            echo '</ul> </div>';
+                        <table class="table">
+                        <thead >
+                          <tr>
+                            <th scope="col">sl no.</th>
+                            <th scope="col">Foods</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Total</th>
+                          </tr>
+                        </thead>';
+                        $i= 1;
+                        foreach($items as $item){
+                            echo'<hr>';
+                            echo '
+                        <tbody>
+                          <tr>
+                            
+                            <th scope="row">'.$i.'</th>
+                            <td>'.$item[1].'<strong> X </strong>'.$item[2].'
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#edit-food">edit</button>
+                            </td>
+                            <td>'.$item[3].'</td>
+                            <td>'.$item[4].'</td>
+                            
+                          </tr>
+                          
+                        </tbody>';
+                            $i++;
+                        }
+                        echo '</table>';
 
-                        echo '
-                        <div class="d-flex justify-content-between">
-                            <ul class="nav d-flex flex-column">
-                                <li class="nav-link text-black">Total </li>';
-                                foreach($items as $item){
-                                    echo'<li class="nav-link text-black">'.$item[3].' </li>';
-                                }
-                            echo '</ul> </div>';
-
-                        echo'
-                        </div>
-                        <hr>
-                        <h5 class="fw-bold">Your Total : Rs '.$_SESSION['totalValue']. '/-</h5>
-                        ';
+                       
+                        
                     }else{
                         echo '<p>Your cart is empty!! </p>';
                     }
+
+
                 ?>
                     
                 
             </div>
+            <?php
+            echo '<h5> Total Rs.' .$_SESSION['totalValue'].'/- </h5>';
+            ?>
         </div>
+
+
+        <!-- model start  -->
+                      <div class="modal fade" id="edit-food" tabindex="-1" aria-labelledby="edit-food-Label" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="edit-food-Label">Modal title</h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              ...
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+        <!-- modal end  -->
     </section>
  
 
@@ -100,13 +132,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="js/index.js"></script>
     <script src="js/_navbar.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js">
-        
-    </script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 
-    <script>
-        let table = new DataTable('#myTable');
-    </script>
-    
   </body>
 </html>

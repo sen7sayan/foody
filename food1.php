@@ -3,7 +3,6 @@
     session_start();
 
     if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
-      echo "here_food1";
       $_SESSION['cart'] = 0;
       $_SESSION['totalValue'] = 0;
       $_SESSION['myfood'] = array();
@@ -12,23 +11,50 @@
   }
 
   if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(isset($_POST['foodName']) && isset($_POST['price']) && isset($_POST['quantity'])){
+    if(isset($_POST['foodName']) && isset($_POST['price']) && isset($_POST['quantity']) && isset($_POST['foodId'])){
       
         $foodName = $_POST['foodName'];
         $price = $_POST['price'];
         $quantity = $_POST['quantity'];
-
-
+        $foodId = $_POST['foodId'];
+        $items = $_SESSION['myfood'];
+        $isthere = false;
 
         // update quantity
         $_SESSION['cart'] +=  $_POST['quantity'];
         
 
         // update food order
-        
-        array_push($_SESSION['myfood'],array($foodName,$price,$quantity ,$price*$quantity));
+      
+          
 
+          $temp_array = array();
+
+          foreach($items as $item){
+            if($item[0] == $foodId){
+              $isthere = true;
+              $item[2] += $quantity;
+              $item[4] += $quantity * $item[3];
+              array_push($temp_array,$item);
+              
+            }else{
+              array_push($temp_array,$item);
+            }
+          }
+
+
+          if($isthere){
+            $_SESSION['myfood'] = $temp_array;
+          }
+          else{
+            array_push($_SESSION['myfood'], array($foodId,$foodName,$quantity ,$price,$price*$quantity));
+       
+          }
         
+
+            
+          
+
 
         // update total value
         $totalValue = $_SESSION['totalValue'];
@@ -95,6 +121,7 @@
                         <div class="card-body row">
                           <h5 class="card-title col-12">Veg Briyani @70</h5>
                           <form action="food1.php" method="post">
+                          <input value="1" type="number" name="foodId" style="display: none;">
                             <input value="70" type="number" name="price" style="display: none;">
                             <input value="Veg Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
@@ -117,6 +144,7 @@
                         <div class="card-body row">
                           <h5 class="card-title col-12">Panner Briyani @120</h5>
                           <form action="food1.php" method="post">
+                          <input value="2" type="number" name="foodId" style="display: none;">
                             <input value="120" type="number" name="price" style="display: none;">
                             <input value="Panner Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
@@ -138,6 +166,7 @@
                         <div class="card-body row">
                           <h5 class="card-title col-12">Chicken Briyani</h5>
                             <form action="food1.php" method="post">
+                              <input value="3" type="number" name="foodId" style="display: none;">
                               <input value="170" type="number" name="price" style="display: none;">
                               <input value="Chicken Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
@@ -159,6 +188,7 @@
                         <div class="card-body row">
                           <h5 class="card-title col-12">Mutton Briyani</h5>
                           <form action="food1.php" method="post">
+                          <input value="4" type="number" name="foodId" style="display: none;">
                             <input value="220" type="number" name="price" style="display: none;">
                             <input value="Mutton Briyani" type="text" name="foodName" style="display: none;">
                                 <select class="" name="quantity" id="">
