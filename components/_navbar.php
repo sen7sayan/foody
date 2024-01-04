@@ -65,6 +65,7 @@
               }
               
             }
+            $_SESSION['user_id'] = $row['sno'];
             $_SESSION['login'] = true;
             $_SESSION['username'] = $row['name'];
           }else{

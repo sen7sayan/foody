@@ -34,10 +34,9 @@
     
   <?php include 'components/_navbar.php' ?>
 
-  <?php 
-    // print_r($_SESSION['myfood']);
-  ?>
+  
 
+    
 
     <section>
         
@@ -45,79 +44,25 @@
             <h1>Your Cart </h1>
             <hr>
             <div class="d-flex " >
-                <?php
-                
-                    // print_r($_SESSION['myfood']);
-                    if(isset($_SESSION['myfood']) && $_SESSION['cart'] >0){
-                        $items = $_SESSION['myfood'];
+            <div class="mb-3 mx-auto">
+                  <div class="card" style="width: 18rem;">
+                      <div class="card-body row">
+                        <h5 class="card-title col-12">Briyani</h5>
+                        <form action="cart.php" method="get" class="col-8 d-flex">
+                            <input type="hidden" value="1" name="f_id" class="p-5">
+                            <input type="number" class="form-control w-100 " min="1" >
+                            <input href="index.php" type="submit" value="Update" class="btn btn-danger ms-2">
+                            
+                          </form>
 
-                        echo '
-                        <table class="table">
-                        <thead >
-                          <tr>
-                            <th scope="col">sl no.</th>
-                            <th scope="col">Foods</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Total</th>
-                          </tr>
-                        </thead>';
-                        $i= 1;
-                        foreach($items as $item){
-                            echo'<hr>';
-                            echo '
-                        <tbody>
-                          <tr>
-                            
-                            <th scope="row">'.$i.'</th>
-                            <td>'.$item[1].'<strong> X </strong>'.$item[2].'
-                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#edit-food">edit</button>
-                            </td>
-                            <td>'.$item[3].'</td>
-                            <td>'.$item[4].'</td>
-                            
-                          </tr>
+                        <form action="cart.php" method="get" class="col-4">
+                            <button type="submit" data-bs-target="#exampleModal" class="btn btn-danger " data-bs-toggle="modal" >Delete </button>
+                        </form>
                           
-                        </tbody>';
-                            $i++;
-                        }
-                        echo '</table>';
-
-                       
-                        
-                    }else{
-                        echo '<p>Your cart is empty!! </p>';
-                    }
-
-
-                ?>
-                    
-                
-            </div>
-            <?php
-            echo '<h5> Total Rs.' .$_SESSION['totalValue'].'/- </h5>';
-            ?>
-        </div>
-
-
-        <!-- model start  -->
-                      <div class="modal fade" id="edit-food" tabindex="-1" aria-labelledby="edit-food-Label" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h1 class="modal-title fs-5" id="edit-food-Label">Modal title</h1>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              ...
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                              <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
-                          </div>
-                        </div>
                       </div>
-        <!-- modal end  -->
+                    </div>
+            </div>
+          </div>
     </section>
  
 
