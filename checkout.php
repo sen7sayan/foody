@@ -11,63 +11,96 @@
     
     
   }
+
+  if(isset($_SESSION['login']) == true){
+    
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+      
+      if(isset($_POST['myaddress'])){
+        if(is_numeric(($_POST['myaddress']))){
+
+          // echo $_POST['myaddress'];
+          // header("location:cart.php");
+
+          include 'connection/_dbconnection.php';
+
+          $user_id = $_SESSION['login'];
+
+          $address_id = $_POST['myaddress'];
+          
+          $auth_address_sql = "SELECT * FROM `person` WHERE `order_id` = '$address_id' AND `user_id` = ' $user_id'";
+          $auth_address_sql_result = mysqli_query($conn,$auth_address_sql);
+
+          if(mysqli_num_rows($auth_address_sql_result) == 1){
+
+            $fetch_cart_sql = "SELECT cart.f_id, cart.quantity, foods.name, cart.cart_id ,
+            foods.price,foods.price *cart.quantity 
+            AS sub_total FROM 
+            users INNER JOIN cart on users.sno = cart.c_id 
+            INNER JOIN foods ON cart.f_id = foods.f_id WHERE users.sno= '$user_id' ";
+
+            $fetch_cart_sql_result = mysqli_query($conn,$fetch_cart_sql);
+
+            foreach($fetch_cart_sql_result as $cart){
+              print_r($cart);
+            }
+
+            if($fetch_cart_sql_result){
+
+              $uni_order_id = uniqid("Lovely-",false);
+
+              $user_order_sql = "INSERT INTO `tbl_history` ( `fld_order_id`, `fld_user_id`, `fld_dt`) VALUES ( '$uni_order_id', '$user_id', current_timestamp())";
+              $user_order_sql_result = mysqli_query($conn, $user_order_sql);
+
+              foreach($fetch_cart_sql_result as $cart){
+                $cart_id =  $cart['cart_id'];
+                $f_id = $cart['f_id'];
+                $f_quantity = $cart['quantity'];
+                $f_name = $cart['name'];
+                $f_price = $cart['price'];
+                $f_subtotal = $cart['sub_total'];
+
+                $insert_order_sql = "INSERT INTO `orders` ( `quantity`, `sub_total`,
+                 `f_id`, `user_id`, `fld_person_id`,`fld_date`,`fld_order_id`) VALUES 
+                 ( '$f_quantity', '$f_subtotal', '$f_id', '$user_id', '$address_id',current_timestamp(),'$uni_order_id')";
+
+                $insert_order_sql_result = mysqli_query($conn, $insert_order_sql);
+                
+                $delete_cart_sql = "DELETE FROM `cart` WHERE `cart`.`cart_id` = '$cart_id'";
+                $delete_cart_result = mysqli_query($conn, $delete_cart_sql);
+              }
+              header("location:orders.php");
+
+            }else{
+              echo "Error return back";
+            }
+
+
+          }else{
+
+            header("location:cart.php");
+          }
+        }else{
+          header("location:cart.php");
+        }
+
+      }else{
+        header("location:cart.php");
+    }
+
+  }else{
+    header("location:cart.php");
+  }
+
+
+
+
+    
+  }else if(isset($_SESSION['login']) == false){
+      header("location:cart.php");
+  }
+
+
+
 ?>
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Lovely</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    
-</head>
-  <body>
-    
-  <?php include 'components/_navbar.php' ?>
-
-
-
-    <section>
-        <div class="container d-flex">
-            <div>
-                <h5>Your Billing Address</h5>
-                <div class="row">
-                    <div class="col-6 col-lg-6 mb-3 col-md-12">
-                      <input type="text" class="form-control" id="personname" aria-describedby="personname" placeholder="Name">
-                    </div>
-          
-                    <div class="col-6 col-lg-6 mb-3 col-md-12">
-                      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
-                    </div>
-                    <div class="col-12 col-lg-12 mb-3 col-md-12">
-                      <textarea name="" id="" cols="30" rows="10" placeholder="Enter your message" class="pt-2 form-control"></textarea>
-                    </div>
-                    
-        
-                  </div>
-                <div>
-                    
-                </div>
-            </div>
-        </div>
-    </section>
- 
-
-
-    <?php include 'components/_footer.php' ?>
-    
-
-
-
-
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="js/index.js"></script>
-    <script src="js/_navbar.js"></script>
-  </body>
-</html>

@@ -1,0 +1,19 @@
+
+// added to orders TABLE
+ALTER TABLE orders ADD FOREIGN KEY (order_id) REFERENCES person(order_id);
+ALTER TABLE orders ADD FOREIGN KEY (f_id) REFERENCES foods(f_id);
+ALTER TABLE `orders` ADD `status` VARCHAR(255) NOT NULL AFTER `sub_total`;
+
+
+ALTER TABLE `person` ADD `user_id` INT NOT NULL AFTER `address`;
+
+
+
+SELECT users.name, users.email, cart.f_id, cart.quantity, foods.name, foods.price,
+foods.price *cart.quantity AS sub_total FROM users INNER JOIN cart on 
+users.sno = cart.c_id INNER JOIN foods ON cart.f_id = foods.f_id WHERE users.sno= 1;
+
+
+SELECT users.name, users.email, cart.f_id, cart.quantity, foods.name, foods.price,foods.price *cart.quantity 
+AS sub_total FROM 
+users INNER JOIN cart on users.sno = cart.c_id INNER JOIN foods ON cart.f_id = foods.f_id WHERE users.sno= 1;

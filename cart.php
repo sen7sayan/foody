@@ -19,17 +19,20 @@
   }
 
   if($_SERVER['REQUEST_METHOD'] == "GET"){
-    
     if(isset($_GET['update']) && isset($_GET['quantity'])){
       if(is_numeric($_GET['update']) && is_numeric($_GET['quantity'])){
+
         include 'connection/_dbconnection.php';
+
         $foodId= $_GET['update'];
         $updateQuantity = $_GET['quantity'];
         
         $user_id = $_SESSION['user_id'];
         $updateSql = "UPDATE `cart` SET `quantity` = '$updateQuantity' WHERE `cart`.`c_id` = '$user_id' AND `cart`.`f_id`='$foodId'";
         $updateCartResult = mysqli_query($conn,  $updateSql);
+        
         print_r($updateCartResult);
+        
         if(!$updateCartResult){
           echo "Failed !!";
         }
@@ -52,6 +55,8 @@
         echo "Fail to delete ";
       }
     }
+    
+    
 
     
     
@@ -59,14 +64,36 @@
   }
 
 
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
+    
+    if(isset($_POST['person']) && isset($_POST['phone']) && isset($_POST['address'])){
+      include 'connection/_dbconnection.php';
+      $user_id = $_SESSION['user_id'];
 
+      $user_name = $_POST['person'];
+      $user_ph = $_POST['phone'];
+      $user_address = $_POST['address'];
+      
+      $orderAddressSql = "INSERT INTO `person` ( `name`, `phone_no`, `dt`, `address`, `user_id`) VALUES ( '$user_name', '$user_ph', current_timestamp(), '$user_address ', '$user_id')";
+      $orderAddressResult = mysqli_query($conn,$orderAddressSql);
+
+      if($orderAddressResult ){
+        echo "Inserted New address";
+      }else{
+        echo "failed to insert";
+      }
+
+    }
+  }
 
 
   if(isset($_SESSION['login'])){
 
     $user_id = $_SESSION['user_id'];
-    $cartSql = "SELECT users.name, users.email, cart.f_id, cart.quantity, foods.name, foods.price FROM users INNER JOIN cart on users.sno = cart.c_id INNER JOIN foods ON cart.f_id = foods.f_id WHERE users.sno= '$user_id'";
     include 'connection/_dbconnection.php';
+
+    $cartSql = "SELECT users.name, users.email, cart.f_id, cart.quantity, foods.name, foods.price FROM users INNER JOIN cart on users.sno = cart.c_id INNER JOIN foods ON cart.f_id = foods.f_id WHERE users.sno= '$user_id'";
+    
     $cartResult = mysqli_query($conn, $cartSql);
 
     if(mysqli_fetch_assoc($cartResult) == 0){
@@ -74,7 +101,15 @@
 
     }
 
-    
+    $getAddressSql = "SELECT * FROM `person` WHERE `user_id` = $user_id";
+    $getAddress = mysqli_query($conn, $getAddressSql);
+    if($getAddress){
+      echo "fetch";
+      
+    }else{
+      echo "not fetch";
+    }
+
 
   }else{
     echo "Please Login In";
@@ -98,8 +133,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
-
-    
+    <link rel="stylesheet" href="cart.css">
 </head>
   <body>
     
@@ -111,11 +145,11 @@
 
     <section>
         
-        <div class="container justify-content-between mx-sm-auto">
+        <div class="container justify-content-between mx-auto">
             <h1>Your Cart </h1>
             <hr>
-            <div class="row " >
-            <div class="mb-3  mx-md-auto mx-sm-auto col-lg-8">
+            <div class="row" >
+            <div class="col-lg-8  mx-auto mb-3 ">
               <?php
               $foodPriceTotal = 0;
               $totalCart = 0;
@@ -158,28 +192,68 @@
             <?php
               if(isset($_SESSION['login']) && $totalCart >0){
                 echo'
-                <div class="col-lg-4 mx-sm-auto mx-md-auto " style="width: 18rem;">
+                <div class="col-lg-4 mx-auto " style="width: 18rem;">
                 <div class="card-body row">
-                 <span class="mb-5">Your Total <strong>Rs.'.$foodPriceTotal.'/- </strong><span>
-                  <h5 class="mt-3">Your Billing Address</h5>
-                  <div class="row" >
-                      <div class="col-12  mb-2 ">
-                        <input type="text" class="form-control" id="personname" aria-describedby="personname" placeholder="Name">
-                      </div>
-            
-                      <div class="col-12 mb-2">
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
-                      </div>
-                      <div class="col-12  mb-2">
-                        <textarea name="" id="" cols="30" rows="10" placeholder="Enter your address" class="pt-2 form-control"></textarea>
-                      </div>
-                  </div>
-                  <div>
-                    <form action="checkout.php?checkout=true" method="post" class="col-8 d-flex">
-                      <input href="index.php" type="submit" value="Procced to Checkout" class="btn btn-danger ms-2">
-                    </form>
-                  </div>
-                </div>
+                 <span class="mb-3">Your Total <strong>Rs.'.$foodPriceTotal.'/- </strong></span>
+                  <h5 class="">Your Billing Address</h5>
+                  <button class="btn btn-danger my-2" type="button" data-bs-toggle="collapse" data-bs-target="#addressCollapse" aria-expanded="false" aria-controls="addressCollapse">
+                    Add a new address
+                  </button>
+                  <div class=" my-3 collapse" id="addressCollapse">
+                      <form action="cart.php" method="post">
+                        <div class="row" >
+                            <div class="col-12  mb-2 ">
+                              <input name="person" type="text" class="form-control"  placeholder="Name" required>
+                            </div>
+              
+                            <div class="col-12 mb-2">
+                              <input type="tel" name="phone" class="form-control"   placeholder="Phone no." required>
+                            </div>
+                            <div class="col-12  mb-2">
+                              <textarea name="address" id="" cols="30" rows="10" placeholder="Enter your address" class="pt-2 form-control" required></textarea>
+                            </div>
+                    
+
+                            <div class="col-12">
+                            
+                              <input class="btn btn-danger " href="#" type="submit" value="Save Address" >
+                              
+                            </div>
+
+                         </div>
+                      
+                      </form>
+                    </div
+                  </div>';
+                  
+                  if(mysqli_num_rows($getAddress) >0){
+                    foreach($getAddress as $address){
+                
+                      echo '
+                      <div class="col-12 py-2 my-2 bg-danger-subtle rounded-2">
+                        <form action="checkout.php" method="post" >
+                          <input name="myaddress" type="hidden" value="'.$address['order_id'].'" >
+                          <div class="row py-2" >    
+                            <div class="col-12 d-flex align-items-center">
+                              <input class="p-2" radio-input" type="radio" />
+                              <h5 class="ps-2">'.$address['name'].'</h5>
+                            </div>
+                            <div class="col-12">
+                              <h5>'.$address['phone_no'].' </h5>
+                            </div>
+                            <div class="col-12 ">
+                              <p>'.$address['address'].'</p>
+                            </div>
+                            <div class="col-12">
+                              <input class="btn btn-danger " href="#" type="submit" value="Procced to Checkout" >
+                            </div>
+                          </div>
+                        </form>
+                      </div>';
+                  }
+                  }
+              
+              echo ' </div>
               </div>
                 ';
               }

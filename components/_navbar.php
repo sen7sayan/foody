@@ -107,7 +107,7 @@
           <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-bowl-food text-danger"></i> mytable ('.$_SESSION['cart'].')</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="cart.php">Cart</a></li>
-            <li><a class="dropdown-item" href="#">Orders</a></li>
+            <li><a class="dropdown-item" href="orders.php">Orders</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Change My Address</a></li>
           </ul>
