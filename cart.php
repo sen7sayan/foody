@@ -9,11 +9,7 @@
     
     session_start();
 
-    if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
-      $_SESSION['cart'] = 0;
-      $_SESSION['totalValue'] = 0;
-      $_SESSION['myfood'] = array();
-    }
+   
     
     
   }
@@ -96,23 +92,19 @@
     
     $cartResult = mysqli_query($conn, $cartSql);
 
-    if(mysqli_fetch_assoc($cartResult) == 0){
-      echo "Your cart is empty !!";
+   
 
-    }
-
-    $getAddressSql = "SELECT * FROM `person` WHERE `user_id` = $user_id";
+    $getAddressSql = "SELECT * FROM `person` WHERE `user_id` = '$user_id'
+    ORDER BY `person`.`order_id` DESC";
     $getAddress = mysqli_query($conn, $getAddressSql);
     if($getAddress){
-      echo "fetch";
+      
       
     }else{
       echo "not fetch";
     }
 
 
-  }else{
-    echo "Please Login In";
   }
 
   
@@ -146,15 +138,26 @@
     <section>
         
         <div class="container justify-content-between mx-auto">
-            <h1>Your Cart </h1>
+            <div class="">
+              <h1>Your Cart </h1>
+              <button class="btn btn-danger" onclick="history.back()">Back to pervious page</button>  
+            </div>
+
             <hr>
             <div class="row" >
             <div class="col-lg-8  mx-auto mb-3 ">
+              
               <?php
+
+
               $foodPriceTotal = 0;
               $totalCart = 0;
               if(isset($_SESSION['login'])){
-                foreach($cartResult as $cart){
+                if(mysqli_fetch_assoc($cartResult) == 0){
+                  echo "<h5>Your cart is empty !!</h5>";
+                
+                }else{
+                  foreach($cartResult as $cart){
                     $totalCart += $cart['quantity'];
                     $foodPriceTotal += $cart['quantity'] * $cart['price'];
                   echo '
@@ -178,11 +181,13 @@
 
 
                 }
+                }
+                
 
                 
 
               }else{
-                echo "Please Log in!!";
+                echo "<h5>Please Log in!!</h5>";
                  
               }
               
@@ -235,7 +240,7 @@
                           <input name="myaddress" type="hidden" value="'.$address['order_id'].'" >
                           <div class="row py-2" >    
                             <div class="col-12 d-flex align-items-center">
-                              <input class="p-2" radio-input" type="radio" />
+                             
                               <h5 class="ps-2">'.$address['name'].'</h5>
                             </div>
                             <div class="col-12">
@@ -245,7 +250,7 @@
                               <p>'.$address['address'].'</p>
                             </div>
                             <div class="col-12">
-                              <input class="btn btn-danger " href="#" type="submit" value="Procced to Checkout" >
+                              <input class="btn btn-danger " href="#" type="submit" value="Confrim Order" >
                             </div>
                           </div>
                         </form>

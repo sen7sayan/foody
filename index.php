@@ -3,11 +3,7 @@
     
     session_start();
 
-    if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
-      $_SESSION['cart'] = 0;
-      $_SESSION['totalValue'] = 0;
-      $_SESSION['myfood'] = array();
-    }
+   
     
     
   }
@@ -85,40 +81,40 @@
             <div>
                 <div class="d-flex justify-content-around">
                     
-                    <div class="food-img">
+                    <a href="food.php?p_id=3" class="food-img text-decoration-none text-dark">
                         <img class="food-logo" src="https://thumbs.dreamstime.com/b/schezwan-paneer-black-bowl-dark-slate-background-indo-chinese-cuisine-dish-deep-fried-cheese-onion-sauce-top-161151362.jpg" alt="">
                         <h5>Panner</h5>
-                    </div>
+                    </a>
 
 
-                    <div class="food-img">
+                    <a href="food.php?p_id=2" class="food-img text-decoration-none text-dark">
                         <img class="food-logo" src="https://img.freepik.com/premium-photo/chinese-noodles-black-background_236836-24468.jpg" alt="">
                         <h5>Noodles</h5>
-                    </div>
+                    </a>
 
 
-                    <div class="food-img">
+                    <a href="food.php?p_id=4" class="food-img text-decoration-none text-dark">
                         <img class="food-logo" src="https://archive.org/download/fish-food-by-midjourney./IMG_20230922_200541.jpg" alt="">
                         <h5>Fish</h5>
-                    </div>
+                    </a>
                 </div>
                 <div class="d-flex justify-content-around my-5">
 
                 
-                    <a class="food-img text-decoration-none text-dark" href="food1.php">
+                    <a class="food-img text-decoration-none text-dark" href="food.php?p_id=1">
                         <img class="food-logo" src="https://img.freepik.com/premium-photo/delicious-chicken-biryani-black-dish-wooden-table-close-up-photography_5095-2065.jpg" alt="">
                         <h5>Briyani</h5>
                     </a>
 
-                    <div class="food-img">
+                    <a href="food.php?p_id=5" class="food-img text-decoration-none text-dark">
                         <img class="food-logo" src="https://previews.123rf.com/images/dolphfyn/dolphfyn1311/dolphfyn131100075/23451850-hot-and-crispy-fried-chicken-chili-garlic-and-black-pepper-on-black-background.jpg" alt="">
                         <h5>Fries</h5>
-                    </div>
+                    </a>
 
-                    <div class="food-img">
+                    <a href="food.php?p_id=6" class="food-img text-decoration-none text-dark">
                         <img class="food-logo" src="https://thumbs.dreamstime.com/b/pepperoni-pizza-black-background-pepperoni-pizza-black-background-picture-perfect-you-to-design-your-117753268.jpg" alt="">
                         <h5>Pizza</h5>
-                    </div>
+                    </a>
                 </div>
 
             </div>

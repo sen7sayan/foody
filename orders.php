@@ -3,11 +3,7 @@
     
     session_start();
 
-    if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
-      $_SESSION['cart'] = 0;
-      $_SESSION['totalValue'] = 0;
-      $_SESSION['myfood'] = array();
-    }
+   
     
     
   }
@@ -18,8 +14,11 @@
 
     include 'connection/_dbconnection.php';
 
-    $user_id = $_SESSION['login'];
-    $get_order_id_sql = "SELECT fld_order_id,fld_dt FROM `tbl_history` WHERE `fld_user_id` = $user_id";
+    $user_id =  $_SESSION['user_id'];
+    $get_order_id_sql = "
+    SELECT fld_order_id,fld_dt,date_format(fld_dt,'%d-%m-%y') as fld_dt_date 
+    FROM `tbl_history` WHERE `fld_user_id` = '$user_id'  
+    ORDER BY `tbl_history`.`fld_dt` DESC";
 
     $get_order_id_sql_result = mysqli_query($conn, $get_order_id_sql);
 
@@ -27,7 +26,7 @@
     
     
   }else{
-    
+    header("location:index.php");
   }
 
 
@@ -54,14 +53,22 @@
 
 
     <section>
-        <div class="container d-flex ">
-            <div class="">
+
+        <div class="container ">
+          
+            <div class="w-50 mx-auto">
                 
                     <?php
                       if(mysqli_num_rows( $get_order_id_sql_result) >0){
+                        $i=0;
+                        echo '<h1 class="my-2">My orders Yet !!</h1>
+                        
+                        <button class="btn btn-danger" onclick="history.back()">Back to pervious page</button>  
+            
+                        ';
                         
                         foreach($get_order_id_sql_result as $uni_order_id){
-                          
+                         
                           $current_order_id = $uni_order_id['fld_order_id'];
 
                 
@@ -71,14 +78,15 @@
                           $get_cart_total_sql = "SELECT SUM(sub_total) as cartTotal FROM orders WHERE fld_order_id = '$current_order_id'";
                           $get_cart_total_sql_result = mysqli_query($conn, $get_cart_total_sql);
 
+                          echo '<div class="card my-5 row">';
                           foreach($get_cart_total_sql_result as $all_total){
                             
                             echo '
-                            <div class="card">
-                              <div class=" pt-2">
+                            
+                              <div class=" pt-2 ">
                                 <h4 class="card-title ps-2">#Order id : '.$current_order_id .'</h4>
                                 <h6 class="card-title ps-2">Total :Rs. '.$all_total['cartTotal'].'</h6>
-                                <span class="card-title ps-2">Date: '. $uni_order_id['fld_dt'].' </span>
+                                <span class="card-title ps-2">Date: '. $uni_order_id['fld_dt_date'].' </span>
                               </div>
 
                           
@@ -96,26 +104,26 @@
                   
                           $order_details_sql_result = mysqli_query($conn, $order_details_sql);
                           
-                          $i=0;
+                          
                           foreach($order_details_sql_result as $order_detail){
                               $i++;
                             echo '
                             <div class="">
                             <button class=" btn   btn-danger mt-1"  data-bs-toggle="collapse" href="#collapseExample'.$i.'" role="button" aria-expanded="false" aria-controls="collapseExample1">'.$order_detail['name'].'</button> 
-                            <div class="collapse card-body bg-danger-subtle rounded" id="collapseExample'.$i.'">
+                            <div class="collapse card-body bg-danger-subtle rounded w-100 " id="collapseExample'.$i.'">
                                 <p>  @ '.$order_detail['price'].' X '.$order_detail['quantity'].' </p>
                                 <span>Sub Total : '.$order_detail['sub_total'].' </span>
-                            </div>';
+                            </div> </div>';
                           }
 
 
                          
                           foreach($get_address_sql_result as $address){
-                            
+                            $i++;
                           echo '
                           
-                          <button class=" btn  btn-danger w-100 mt-2"  data-bs-toggle="collapse" href="#collapseExample10" role="button" aria-expanded="true" aria-controls="collapseExample">Delivery Address</button> 
-            <div class="collapse card-body show" id="collapseExample10">
+                          <button class=" btn  btn-danger  mt-2"  data-bs-toggle="collapse" href="#collapseExample'.$i.'" role="button" aria-expanded="true" aria-controls="collapseExample">Delivery Address</button> 
+            <div class="collapse card-body show" id="collapseExample'.$i.'">
               <p>'.$address['name'].' </p>
               <p>'.$address['phone_no'].' </p>
               <p>'.$address['address'].' </p>
@@ -131,7 +139,7 @@
 
                       
                   
-                        } echo '</div>';
+                        } 
 
                       }else{
                         echo "<h2>No orders Yet !! </h2>";

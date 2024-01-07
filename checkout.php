@@ -3,11 +3,6 @@
     
     session_start();
 
-    if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
-      $_SESSION['cart'] = 0;
-      $_SESSION['totalValue'] = 0;
-      $_SESSION['myfood'] = array();
-    }
     
     
   }
@@ -24,7 +19,7 @@
 
           include 'connection/_dbconnection.php';
 
-          $user_id = $_SESSION['login'];
+          $user_id =  $_SESSION['user_id'];
 
           $address_id = $_POST['myaddress'];
           
