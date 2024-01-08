@@ -38,10 +38,10 @@
             <div class="newsletter col-lg-6 col-sm-12">
               <h5>Subscribe to our newsletter</h5>
               <p>Monthly digest of what's new and exciting from us.</p>
-              <div class="">
-                <input id="newsletter1" type="text" class="form-control mb-2" placeholder="Email address">
-                <button class="btn btn-danger" type="button">Subscribe</button>
-              </div>
+              <form class="" method="post" action="newsletter.php">
+                <input id="newsletter1" name="sub_email" type="email" class="form-control mb-2" placeholder="Email address">
+                <button class="btn btn-danger" type="submit">Subscribe</button>
+              </form>
             </div>
           </div>
         </div>

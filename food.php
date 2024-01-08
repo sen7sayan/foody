@@ -17,6 +17,10 @@
       $result = mysqli_query($conn, $getPageDataSql);
       $myfood = mysqli_fetch_assoc($result);
 
+      if($myfood==null){
+        header("location:404_page.php");
+      }
+
       $getFoodDataSql = "SELECT * FROM `foods` WHERE `page_id` = '$p_id'";
       $priceResult = mysqli_query($conn,  $getFoodDataSql);
       $_SESSION['page_id'] = $p_id;
@@ -75,6 +79,8 @@
       header("location:food.php?p_id=".$_SESSION['page_id']);
 
 
+    }else{
+      header("location:food.php?p_id=".$_SESSION['page_id']);
     }
     
 
@@ -165,7 +171,7 @@
                              
                                 
                                 <div class="rating text-center">
-                                  <span>'. $myfood['f_rating'] .'/5 <i class="fa-solid fa-star text-danger"></i></span>
+                                  <span>'. $myfood['f_rating'] .'/10 <i class="fa-solid fa-star text-danger"></i></span>
                                   <p>Rating</p>
                                 </div>
                                 <div class="vr h-75 mt-3"></div>

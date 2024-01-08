@@ -116,6 +116,9 @@
 
             </div>
         </div>
+        <div class="text-center my-5">
+          <button class="btn btn-danger"><a href="food.php" class="text-decoration-none text-white">Eat more !!</a></button>
+        </div>
     </section>
     <!-- category end  -->
 
@@ -219,17 +222,17 @@
     <section class="">
       <div class="container">
         <h2 class="text-center fw-bold pb-3 ">Contact Us</h2>
-        <form>
+        <form method="post" action="message.php">
           <div class="row">
             <div class="col-6 col-lg-6 mb-3 col-md-12">
-              <input type="text" class="form-control" id="personname" aria-describedby="personname" placeholder="Name">
+              <input name="name" type="text" class="form-control" id="personname" aria-describedby="personname" placeholder="Name" required>
             </div>
   
             <div class="col-6 col-lg-6 mb-3 col-md-12">
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email">
+              <input name="sub_email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" required>
             </div>
             <div class="col-12 col-lg-12 mb-3 col-md-12">
-              <textarea name="" id="" cols="30" rows="10" placeholder="Enter your message" class="pt-2 form-control"></textarea>
+              <textarea  name="message" id="" cols="30" rows="10" placeholder="Enter your message" class="pt-2 form-control" required></textarea>
             </div>
             
 
