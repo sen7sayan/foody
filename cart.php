@@ -9,7 +9,7 @@
     
     session_start();
 
-   
+    $_SESSION['log'] = false;
     
     
   }
@@ -27,10 +27,10 @@
         $updateSql = "UPDATE `cart` SET `quantity` = '$updateQuantity' WHERE `cart`.`c_id` = '$user_id' AND `cart`.`f_id`='$foodId'";
         $updateCartResult = mysqli_query($conn,  $updateSql);
         
-        print_r($updateCartResult);
+        // print_r($updateCartResult);
         
-        if(!$updateCartResult){
-          echo "Failed !!";
+        if($updateCartResult){
+          $_SESSION['log'] = "Cart updated !!";
         }
 
       }else{
@@ -46,7 +46,7 @@
       $deleteCartResult = mysqli_query($conn,$deleteCartSql);
 
       if($deleteCartResult){
-        echo "Deleted";
+        $_SESSION['log'] = "Cart Deleted";
       }else{
         echo "Fail to delete ";
       }
@@ -74,7 +74,7 @@
       $orderAddressResult = mysqli_query($conn,$orderAddressSql);
 
       if($orderAddressResult ){
-        echo "Inserted New address";
+        $_SESSION['log'] = "New address added !!";
       }else{
         echo "failed to insert";
       }
@@ -129,7 +129,17 @@
 </head>
   <body>
     
-  <?php include 'components/_navbar.php' ?>
+  <?php include 'components/_navbar.php' ;
+  
+  if($_SESSION['log']){
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success !</strong> '.$_SESSION['log'].'
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>';
+  $_SESSION['log'] = false;  
+}
+  
+  ?>
 
   
 

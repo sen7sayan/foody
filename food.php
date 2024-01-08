@@ -2,6 +2,7 @@
 
   if(session_id() == '') {
     session_start();
+    $_SESSION['log'] = false;
   }
 
  
@@ -24,22 +25,31 @@
     
 
   }else if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['f_id']) && isset($_GET['quantity']) && is_numeric($_GET['f_id']) && is_numeric($_GET['quantity']) ){
+  
     if( isset($_SESSION['login']) && $_SESSION['login'] == true){
+
       include 'connection/_dbconnection.php';
 
       $foodId = $_GET['f_id'];
       $foodQuantity = $_GET['quantity'];
       $userId = $_SESSION['user_id'];
-
       
   
-      $existSql = "SELECT * FROM `cart` WHERE `f_id` = $foodId";
+      $existSql = "SELECT * FROM `cart` WHERE `f_id` = $foodId AND `c_id` = '$userId'";
       $result = mysqli_query($conn, $existSql);
       
       if(mysqli_num_rows($result) == 0){
+        
         $insertSql = "INSERT INTO `cart` (`c_id`, `f_id`, `quantity`) VALUES ('$userId', '$foodId', '$foodQuantity');";
       
         $insertResult = mysqli_query($conn, $insertSql);
+
+        if($insertResult){
+          $_SESSION['log_add_to_cart'] = "Item added";
+        }else{
+          echo "not added";
+        }
+        
         
   
       }else if(mysqli_num_rows($result) == 1){
@@ -56,7 +66,10 @@
   
         $updateResult = mysqli_query($conn, $addToCartSql);
   
-        
+        if($updateResult){
+          $_SESSION['log'] = "Added to cart !!";
+        }
+
       }
       
       header("location:food.php?p_id=".$_SESSION['page_id']);
@@ -67,6 +80,7 @@
 
     
   }else{
+
     include 'connection/_dbconnection.php';
     $get_pages = "SELECT * FROM `page`";
     $get_pages_result = mysqli_query($conn, $get_pages);
@@ -115,7 +129,15 @@
     </div>';
     }
 
+    if($_SESSION['log'] ){
+      echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>ohh!</strong> '.$_SESSION['log'].'
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+    $_SESSION['log'] = false;   
+  }
 
+  
   
   
   ?>
@@ -253,7 +275,7 @@
             <div>
                 <div class="d-flex justify-content-around flex-wrap">';
                 
-                    
+                    if(isset($get_pages_result)){
                 foreach($get_pages_result as $page){
 
                   echo'<a href="food.php?p_id='.$page['page_id'].'" class="food-img text-decoration-none text-dark">
@@ -262,7 +284,7 @@
                 </a>';
                 }
 
-
+              }
                    
                 
                 echo'</div>

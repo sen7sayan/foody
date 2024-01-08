@@ -3,7 +3,7 @@
     
     session_start();
 
-    
+    $_SESSION['order_status_log'] = false;
     
   }
 
@@ -14,8 +14,7 @@
       if(isset($_POST['myaddress'])){
         if(is_numeric(($_POST['myaddress']))){
 
-          // echo $_POST['myaddress'];
-          // header("location:cart.php");
+          
 
           include 'connection/_dbconnection.php';
 
@@ -36,9 +35,7 @@
 
             $fetch_cart_sql_result = mysqli_query($conn,$fetch_cart_sql);
 
-            foreach($fetch_cart_sql_result as $cart){
-              print_r($cart);
-            }
+            
 
             if($fetch_cart_sql_result){
 
@@ -63,8 +60,11 @@
                 
                 $delete_cart_sql = "DELETE FROM `cart` WHERE `cart`.`cart_id` = '$cart_id'";
                 $delete_cart_result = mysqli_query($conn, $delete_cart_sql);
+                $_SESSION['order_status_log'] = "place order , #OrderId:'.$uni_order_id.'";
+                
               }
-              header("location:orders.php");
+              header("location:confirm.php");
+              
 
             }else{
               echo "Error return back";

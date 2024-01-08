@@ -3,9 +3,16 @@
   $showError = false;
   $showAlert = false;
 
+  
+
+  if(isset($_SESSION['user_id'])){
+    include '../lovely/connection/_dbconnection.php';
+    include '../lovely/action/fetch_cart.php';
+  }
+
   if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-    include '../lovely/connection/_dbconnection.php';
+    
     if(isset($_POST["cname"]) == true && isset($_POST["email"]) == true && isset($_POST["password"])== true && isset($_POST["cpassword"]) == true){
       
       $email = $_POST["email"];
@@ -16,7 +23,7 @@
       
 
       if($password == $cpassword){
-
+        include '../lovely/connection/_dbconnection.php';
         $existSql = "SELECT * FROM `users` WHERE `email` = '$email'";
         $result = mysqli_query($conn,$existSql);
         $rows = mysqli_num_rows($result);
@@ -28,7 +35,7 @@
           $createUserSql = "INSERT INTO `users` ( `name`, `email`, `password`, `dt`) VALUES ('$name', '$email', '$hash', current_timestamp())";
           
           $result = mysqli_query($conn,$createUserSql);
-          // header("location: ../index.php");
+
           $showAlert = "Account Your Created Successfully !!";
   
         }else{
@@ -41,7 +48,7 @@
       
       
     }else if(isset($_POST["cname"]) == false && isset($_POST["email"]) == true && isset($_POST["password"])== true && isset($_POST["cpassword"]) == false){
-      
+      include '../lovely/connection/_dbconnection.php';
       $email = $_POST["email"];
       $password = $_POST["password"];
 
@@ -53,13 +60,11 @@
       }else if (mysqli_num_rows($result) == 1){
         
         while($row = mysqli_fetch_assoc($result)){
-          // echo $row['password'];
           if(password_verify($password, $row['password'])){
             if(session_id() == '') {
               session_start();
           
               if(!isset($_SESSION['cart']) && !isset($_SESSION['totalValue']) && !isset($_SESSION['myfood'])){
-                $_SESSION['cart'] = 0;
                 $_SESSION['totalValue'] = 0;
                 $_SESSION['myfood'] = array();
               }
@@ -68,6 +73,18 @@
             $_SESSION['user_id'] = $row['sno'];
             $_SESSION['login'] = true;
             $_SESSION['username'] = $row['name'];
+
+            
+
+            // -------------
+            include '../lovely/action/fetch_cart.php';
+
+
+            // --------
+
+            
+
+
           }else{
             $showError = "Enter, correct password !!";
           }
@@ -104,7 +121,7 @@
           echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
 
           <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-bowl-food text-danger"></i> mytable (0)</a>
+          <a class="nav-link dropdown-toggle " data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-bowl-food text-danger"></i> mytable ('.$_SESSION['cart'].')</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="cart.php">Cart</a></li>
             <li><a class="dropdown-item" href="orders.php">Orders</a></li>
@@ -129,6 +146,13 @@
           
         </ul>';
         }
+
+        // ------------------
+
+       
+
+
+        // ----------------
 
         if(!isset($_SESSION['login'])){
           echo '<ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
