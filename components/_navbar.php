@@ -13,25 +13,30 @@
   if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     
-    if(isset($_POST["cname"]) == true && isset($_POST["email"]) == true && isset($_POST["password"])== true && isset($_POST["cpassword"]) == true){
+    if(isset($_POST["cname"]) == true && isset($_POST["email"]) == true && 
+      isset($_POST["password"])== true && isset($_POST["cpassword"]) == true){
       
       $email = $_POST["email"];
       $name = $_POST["cname"];
       $password = $_POST["password"];
       $cpassword = $_POST["cpassword"];
+      $x = $password ;
+     
 
-      
-
-      if($password == $cpassword){
+      if($password === $cpassword){
+        
         include '../lovely/connection/_dbconnection.php';
         $existSql = "SELECT * FROM `users` WHERE `email` = '$email'";
         $result = mysqli_query($conn,$existSql);
         $rows = mysqli_num_rows($result);
 
         if($rows == 0){
+         
+          $hash = password_hash($x,PASSWORD_DEFAULT);
 
-          $hash = password_hash($password,PASSWORD_DEFAULT);
-  
+         
+
+         
           $createUserSql = "INSERT INTO `users` ( `name`, `email`, `password`, `dt`) VALUES ('$name', '$email', '$hash', current_timestamp())";
           
           $result = mysqli_query($conn,$createUserSql);
@@ -59,8 +64,13 @@
         $showError = "User, does not exist !!";
       }else if (mysqli_num_rows($result) == 1){
         
+        
         while($row = mysqli_fetch_assoc($result)){
-          if(password_verify($password, $row['password'])){
+          var_dump($password);
+          var_dump($row['password']);
+          
+          if(password_verify($_POST["password"],$row['password'])){
+            
             if(session_id() == '') {
               session_start();
           
@@ -85,7 +95,9 @@
             
 
 
-          }else{
+          }
+          else{
+            
             $showError = "Enter, correct password !!";
           }
         }
